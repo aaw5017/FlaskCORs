@@ -8,9 +8,14 @@ def get_cors_headers(method: str):
         'Access-Control-Allow-Origin': 'http://localhost:9000'
     }
 
-@api_bp.route('/')
+# Even though this is a GET request, it's returning JSON, which requires CORs
+@api_bp.route('/get-test', methods=['GET', 'OPTIONS'])
 def index():
-    return 'Index hit'
+    headers = get_cors_headers('GET')
+    if request.method == 'OPTIONS':
+        return make_response(('', 204, headers))
+
+    return make_response(({'data': 'hey now, you GET-ed'}, 200, headers))
 
 @api_bp.route('/post-test', methods=['POST', 'OPTIONS'])
 def post_test():
