@@ -1,0 +1,5 @@
+@echo off
+@setlocal
+
+start cmd /k "python -m flask run"
+start cmd /k "python -m http.server 9000 -d ./public"

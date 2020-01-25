@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CORs Testing</title>
+    <style type="text/css">
+        :root {
+            font-size: 18px;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-size: 1rem;
+        }
+        body {
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            display: flex;
+            flex-direction: column;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        header {
+            padding-top: calc(100vh * .10);
+            padding-bottom: 20px;
+            text-align: center;
+            margin-bottom: 45px;
+            border-bottom: 3px solid #989898;
+        }
+        main {
+            flex-grow: 1;
+        }
+        article {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        button {
+            font: inherit;
+            cursor: pointer;
+        }
+        pre {
+            margin: 0;
+            padding: 10px;
+            background: #eee;
+            border-radius: 4px;
+            box-shadow: 2px 2px 7px #aaa;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 300ms, visibility 300ms;
+            max-height: 300px;
+            overflow: auto;
+        }
+        pre.has-content {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CORs Testing Ground</h1>
+    </header>
+    <main>
+        <article>
+            <section>
+                <button type="button" name="post-btn">Send POST</button>
+            </section>
+            <section>
+                <button type="button" name="put-btn">Send PUT</button>
+            </section>
+            <section>
+                <button type="button" name="delete-btn">Send DELETE</button>
+            </section>
+        </article>
+        <pre id="output"></pre>
+    </main>
+    <script type="application/javascript">
+        (function() {
+            const apiBase = 'http://127.0.0.1:8000/api',
+                output = document.getElementById('output');
+
+            document.addEventListener('click', function(e) {
+                let route, method;
+                switch(e.target.name) {
+                    case 'post-btn': {
+                        route = 'post';
+                        break;
+                    }
+                    case 'put-btn': {
+                        route = 'put';
+                        break;
+                    }
+                    case 'delete-btn': {
+                        route = 'delete';
+                        break;
+                    }
+                    default:
+                        return;
+                }
+
+                const body = JSON.stringify({foo: 'bar'});
+                fetch(`${apiBase}/${route}-test`, {
+                    method: route.toUpperCase(),
+                    body,
+                    headers: new Headers({
+                        'content-type': 'application/json'
+                    })
+                }).then(function(res) {
+                    res.json().then(json => {
+                        output.classList.add('has-content');
+                        output.innerHTML += '<div>' + JSON.stringify(json) + '</div>'
+                    });
+                }).catch(function(err) {
+                    console.error(err);
+                });
+            });
+        })();
+    </script>
+</body>
+</html>
